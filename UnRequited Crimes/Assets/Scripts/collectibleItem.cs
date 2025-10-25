@@ -10,6 +10,6 @@ public class collectibleItem : baseInteractable
         if (!inventoryManager.instance)
             return;
         if (inventoryManager.instance.AddItem(itemToPickUp))
-            Destroy(this);
+            Destroy(this.gameObject);
     }
 }

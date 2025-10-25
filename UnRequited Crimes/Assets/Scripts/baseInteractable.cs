@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class baseInteractable: MonoBehaviour
 {
-    [SerializeField] BoxCollider interactableCollision;
+    [SerializeField] Collider interactableCollision;
     [SerializeField][Range(0.0f, 10.0f)] float maxRange;
 
     /// <summary>
