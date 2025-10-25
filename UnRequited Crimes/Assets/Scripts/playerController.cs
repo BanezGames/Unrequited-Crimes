@@ -92,6 +92,7 @@ public class playerController : MonoBehaviour
             if(dmg != null)
             {
                 dmg.takeDamage(shootDamage);
+                shootTimer = 0;
             }
             Debug.Log(hit.collider.name);
             baseInteractable interactableObject = hit.collider.GetComponent<baseInteractable>();
