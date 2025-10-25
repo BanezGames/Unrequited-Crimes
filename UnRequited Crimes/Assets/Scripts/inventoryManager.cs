@@ -7,14 +7,14 @@ public class inventoryManager : MonoBehaviour
 {
 
     public static inventoryManager instance;
-    private List<string> itemList;
+    private List<itemData> itemList;
     private int currentItemIndex;
 
     private List<GameObject> itemDisplay;
     [SerializeField] private GameObject itemCursor;
     [SerializeField] private GameObject inventoryBar;
-    [SerializeField] private GameObject itemNameTextHolder;
-    [SerializeField] private TMP_Text itemNameText;
+    [SerializeField] private GameObject itemNameText;
+    //[SerializeField] private TMP_Text itemNameText;
 
     [SerializeField][Range(0.01f, 1.0f)] private float scrollCooldown;
     [SerializeField] [Range(0.01f, 1.0f)] private float scrollDeadzone;
@@ -26,11 +26,13 @@ public class inventoryManager : MonoBehaviour
     {
         if (!instance)
         {
-            itemList = new List<string>();
+            itemList = new List<itemData>();
             itemDisplay = new List<GameObject>();
             instance = this;
             DontDestroyOnLoad(this);
         }
+        else
+            Destroy(this);
     }
 
     public void SetAllowedToScroll(bool scrollingAllowed)
@@ -73,7 +75,7 @@ public class inventoryManager : MonoBehaviour
         currentItemIndex++;
         if (currentItemIndex >= itemList.Count)
             currentItemIndex = 0;
-        SwitchActiveItemScale(oldIndex);
+        SwitchActiveItem(oldIndex);
     }
 
     private void SelectPrevItem()
@@ -82,23 +84,31 @@ public class inventoryManager : MonoBehaviour
         currentItemIndex--;
         if (currentItemIndex < 0)
             currentItemIndex = itemList.Count - 1;
-        SwitchActiveItemScale(oldIndex);
+        SwitchActiveItem(oldIndex);
     }
 
-    private void SwitchActiveItemScale(int oldIndex)
+    private void SwitchActiveItem(int oldIndex)
     {
         if (itemList.Count <= 0)
             return;
         itemDisplay[oldIndex].transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         itemDisplay[currentItemIndex].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        //itemNameTextHolder.GetComponent<TextMeshPro>().text = itemList[currentItemIndex];
-        itemNameText.text = itemList[currentItemIndex];
+        itemNameText.GetComponent<TMP_Text>().text = itemList[currentItemIndex].itemName;
+        var player = FindFirstObjectByType<playerController>();
+        if (player)
+        {
+            if (itemList.Count > 0)
+                player.SwapHeldItem(itemList[currentItemIndex]);
+            else
+                player.SwapHeldItem(null);
+        }
+        //itemNameText.text = itemList[currentItemIndex].itemName;
     }
 
     public string GetCurrentItemName()
     {
         if (itemList.Count > 0)
-            return itemList[currentItemIndex];
+            return itemList[currentItemIndex].itemName;
         else
             return "";
     }
@@ -117,7 +127,7 @@ public class inventoryManager : MonoBehaviour
             return false;
         }
 
-        itemList.Add(newItem.itemName);
+        itemList.Add(newItem);
         var newSprite = new GameObject();
         newSprite.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         var image = newSprite.AddComponent<Image>();
@@ -127,7 +137,7 @@ public class inventoryManager : MonoBehaviour
 
         int oldIndex = currentItemIndex;
         currentItemIndex = itemList.Count - 1;
-        SwitchActiveItemScale(oldIndex);
+        SwitchActiveItem(oldIndex);
 
         Debug.Log(newItem.itemName + " was added to the player's inventory.");
         return true;
@@ -154,7 +164,7 @@ public class inventoryManager : MonoBehaviour
     {
         for (int i = 0; i < itemList.Count; i++)
         {
-            if (itemName == itemList[i])
+            if (itemName == itemList[i].itemName)
             {
                 itemList.RemoveAt(i);
                 Destroy(itemDisplay[i]);
@@ -162,7 +172,7 @@ public class inventoryManager : MonoBehaviour
                     currentItemIndex--;
                 if (currentItemIndex < 0)
                     currentItemIndex = 0;
-                SwitchActiveItemScale(currentItemIndex);
+                SwitchActiveItem(currentItemIndex);
                 Debug.Log(itemName + " was removed from the inventory.");
             }
         }
@@ -189,7 +199,7 @@ public class inventoryManager : MonoBehaviour
     {
         for (int i = 0; i < itemList.Count; i++)
         {
-            if (itemName == itemList[i])
+            if (itemName == itemList[i].itemName)
             {
                 Debug.Log(itemName + " is in the player's inventory.");
                 return true;
@@ -206,11 +216,11 @@ public class inventoryManager : MonoBehaviour
         {
             itemCursor.SetActive(true);
             itemCursor.transform.position = itemDisplay[currentItemIndex].transform.position;
-            itemNameTextHolder.SetActive(true);
+            itemNameText.SetActive(true);
         }
         else
         {
-            itemNameTextHolder.SetActive(false);
+            itemNameText.SetActive(false);
             itemCursor.SetActive(false);
         }
     }
