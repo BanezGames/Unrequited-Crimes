@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::itemData
   itemName: Phone
   itemDisplay: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  itemMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  itemMaterial: {fileID: 2100000, guid: e6a8e9928d600134f886b0e0fd0ad614, type: 2}
