@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage //Ipickup
 {
@@ -13,7 +14,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
 
-    [SerializeField] GameObject heldModel;
+    //[SerializeField] GameObject heldModel;
     [SerializeField] int shootDamage;
     [SerializeField] int shootdist;
     [SerializeField] float shootRate;
@@ -32,6 +33,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
     }
 
     // Update is called once per frame
@@ -116,6 +118,8 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     public void takeDamage(int amount)
     {
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine( flashPlayerDmg());
 
         if(HP <= 0)
         {
@@ -124,23 +128,14 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         }
     }
 
-    public void SwapHeldItem(itemData data)
+   public void updatePlayerUI()
     {
-        if (data)
-        {
-            heldModel.GetComponent<MeshRenderer>().enabled = true;
-            heldModel.GetComponent<MeshFilter>().sharedMesh = data.itemMesh;
-            heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.itemMaterial;
-        }
-        else
-        {
-            heldModel.GetComponent<MeshRenderer>().enabled = false;
-        }
+        gameManager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
     }
-
-    //public void getItem(itemData data)
-    //{
-    //    heldModel.GetComponent<MeshFilter>().sharedMesh = data.heldModel.GetComponent<MeshFilter>().sharedMesh;
-    //    heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.heldModel.GetComponent<MeshRenderer>().sharedMaterial;
-    //}
+    IEnumerator flashPlayerDmg()
+    {
+        gameManager.instance.playerDamageScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gameManager.instance.playerDamageScreen.SetActive(false);
+    }
 }
