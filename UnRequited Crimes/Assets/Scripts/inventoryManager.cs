@@ -32,7 +32,7 @@ public class inventoryManager : MonoBehaviour
             DontDestroyOnLoad(this);
         }
         else
-            Destroy(this);
+            Destroy(this.gameObject);
     }
 
     public void SetAllowedToScroll(bool scrollingAllowed)
