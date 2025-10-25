@@ -48,13 +48,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c4f91839607da24aae4e71435e1b180, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerController
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 8
   controller: {fileID: 846860922572013503}
   speed: 3
   sprintMod: 3
   jumpSpeed: 10
   jumpCountMax: 2
   gravity: 35
-  shootDamage: 0
+  shootDamage: 1
   shootdist: 15
   shootRate: 0.5
 --- !u!143 &846860922572013503
