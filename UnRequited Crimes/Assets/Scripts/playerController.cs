@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class playerController : MonoBehaviour
 {
+    [SerializeField] LayerMask ignoreLayer;
     [SerializeField] CharacterController controller;
 
     [SerializeField] int speed;
@@ -87,6 +88,11 @@ public class playerController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootdist))
         {
+            IDamage dmg = hit.collider.GetComponent<IDamage>();
+            if(dmg != null)
+            {
+                dmg.takeDamage(shootDamage);
+            }
             Debug.Log(hit.collider.name);
             baseInteractable interactableObject = hit.collider.GetComponent<baseInteractable>();
             if (interactableObject)
