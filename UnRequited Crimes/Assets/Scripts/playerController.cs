@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage //Ipickup
 {
@@ -32,6 +33,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
     }
 
     // Update is called once per frame
@@ -116,6 +118,8 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     public void takeDamage(int amount)
     {
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine( flashPlayerDmg());
 
         if(HP <= 0)
         {
@@ -124,9 +128,14 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         }
     }
 
-    //public void getItem(itemData data)
-    //{
-    //    heldModel.GetComponent<MeshFilter>().sharedMesh = data.heldModel.GetComponent<MeshFilter>().sharedMesh;
-    //    heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.heldModel.GetComponent<MeshRenderer>().sharedMaterial;
-    //}
+   public void updatePlayerUI()
+    {
+        gameManager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
+    }
+    IEnumerator flashPlayerDmg()
+    {
+        gameManager.instance.playerDamageScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gameManager.instance.playerDamageScreen.SetActive(false);
+    }
 }

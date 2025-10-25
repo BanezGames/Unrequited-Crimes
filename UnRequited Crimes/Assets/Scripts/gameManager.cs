@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class gameManager : MonoBehaviour
 {
@@ -11,6 +13,9 @@ public class gameManager : MonoBehaviour
 
     public GameObject player;
     public playerController playerScript;
+
+    public Image playerHPBar;
+    public GameObject playerDamageScreen;
 
     public bool isPaused;
 
@@ -83,4 +88,6 @@ public class gameManager : MonoBehaviour
         menuActive.SetActive(true);
 
     }
+
+
 }
