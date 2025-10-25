@@ -3,7 +3,7 @@ using UnityEngine;
 public class baseInteractable: MonoBehaviour
 {
     [SerializeField] BoxCollider interactableCollision;
-    [SerializeField][Range(1.0f, 1000.0f)] int maxRange;
+    [SerializeField][Range(0.0f, 10.0f)] float maxRange;
 
     /// <summary>
     /// Attempts to cause an interaction with the object.
@@ -12,14 +12,19 @@ public class baseInteractable: MonoBehaviour
     /// </summary>
     /// <param name="player"></param>
     /// <param name="itemName"></param>
-    public void TryInteract(playerController player, string itemName = "")
+    public bool TryInteract(playerController player, string itemName = "")
     {
         if (IsInRange(player.transform.position))
+        {
             Interact(player, itemName);
+            return true;
+        }
+        return false;
     }
 
     protected virtual void Interact(playerController player, string itemName = "")
     {
+        Debug.Log("You have interacted with this object");
     }
 
     private bool IsInRange(Vector3 playerPosition)

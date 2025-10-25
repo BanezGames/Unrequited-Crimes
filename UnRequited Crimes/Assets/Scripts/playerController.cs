@@ -32,6 +32,7 @@ public class playerController : MonoBehaviour
     void Update()
     {
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootdist, Color.red);
+        shootTimer += Time.deltaTime;
         movement();
 
         sprint();
@@ -83,13 +84,19 @@ public class playerController : MonoBehaviour
 
     void shoot()
     {
-        shootTimer = 0;
-
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootdist))
         {
             Debug.Log(hit.collider.name);
-        
+            baseInteractable interactableObject = hit.collider.GetComponent<baseInteractable>();
+            if (interactableObject)
+            {
+                // TODO:
+                // When we add an inventory and items, also pass the name of the currently held item into this function
+                // or pass "" if no item is currently being held
+                if (interactableObject.TryInteract(this))
+                    shootTimer = 0;
+            }
         }
 
     }

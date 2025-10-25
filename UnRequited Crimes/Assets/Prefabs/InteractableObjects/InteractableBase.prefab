@@ -125,4 +125,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::baseInteractable
   interactableCollision: {fileID: 1527757407718333664}
-  maxRange: 1
+  maxRange: 1.6

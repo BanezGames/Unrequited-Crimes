@@ -54,6 +54,9 @@ MonoBehaviour:
   jumpSpeed: 10
   jumpCountMax: 2
   gravity: 35
+  shootDamage: 0
+  shootdist: 10
+  shootRate: 1
 --- !u!143 &846860922572013503
 CharacterController:
   m_ObjectHideFlags: 0
