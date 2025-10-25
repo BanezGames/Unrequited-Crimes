@@ -1,6 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class playerController : MonoBehaviour, IDamage 
+public class playerController : MonoBehaviour, IDamage //Ipickup
 {
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] CharacterController controller;
@@ -12,6 +13,7 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
 
+    //[SerializeField] GameObject heldModel;
     [SerializeField] int shootDamage;
     [SerializeField] int shootdist;
     [SerializeField] float shootRate;
@@ -121,4 +123,10 @@ public class playerController : MonoBehaviour, IDamage
 
         }
     }
+
+    //public void getItem(itemData data)
+    //{
+    //    heldModel.GetComponent<MeshFilter>().sharedMesh = data.heldModel.GetComponent<MeshFilter>().sharedMesh;
+    //    heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.heldModel.GetComponent<MeshRenderer>().sharedMaterial;
+    //}
 }

@@ -299,6 +299,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2154226324638006665}
   - component: {fileID: 5098491615239107798}
+  - component: {fileID: 2705939450447306291}
   - component: {fileID: 5132807932903355205}
   - component: {fileID: 636812268754020458}
   - component: {fileID: 8627251018703334014}
@@ -339,10 +340,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   model: {fileID: 7146813995469251031}
+  agent: {fileID: 2705939450447306291}
+  headPos: {fileID: 5297762770289154286}
   HP: 3
+  faceTargetSpeed: 8
+  FOV: 45
+  roamDist: 20
+  roamPauseTime: 3
   shootPos: {fileID: 1707967682576204259}
   bullet: {fileID: 2589053303222181221, guid: 14351da5d5ab1d540af370177d292dc7, type: 3}
   shootrate: 1
+--- !u!195 &2705939450447306291
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2327064492766347984}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.1
+  m_Speed: 3.5
+  m_Acceleration: 32
+  avoidancePriority: 50
+  m_AngularSpeed: 600
+  m_StoppingDistance: 12
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!95 &5132807932903355205
 Animator:
   serializedVersion: 7
@@ -353,7 +382,7 @@ Animator:
   m_GameObject: {fileID: 2327064492766347984}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: c6acf3f29c109e4439950c8f6a85cb2b, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3e3b6f14861ea5a4e95b86cecca59ec9, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1

@@ -1,10 +1,18 @@
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
+using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour, IDamage
 {
     [SerializeField] Renderer model;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] Transform headPos;
+
     [SerializeField] int HP;
+    [SerializeField] int faceTargetSpeed;
+    [SerializeField] int FOV;
+    [SerializeField] int roamDist;
+    [SerializeField] int roamPauseTime;
+
 
     [SerializeField] Transform shootPos;
     [SerializeField] GameObject bullet;
@@ -13,8 +21,14 @@ public class EnemyAI : MonoBehaviour, IDamage
     Color colorOrig;
 
     float shootTimer;
+    float roamTimer;
+    float angleToPlayer;
+    float stoppingDistOrg;
 
     bool playerInRange;
+
+    Vector3 playerDir;
+    Vector3 startingPos;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,21 +36,83 @@ public class EnemyAI : MonoBehaviour, IDamage
         colorOrig = model.material.color;
         gameManager.instance.updateGameGoal(1);
 
-
+        stoppingDistOrg = agent.stoppingDistance;
+        startingPos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
         shootTimer += Time.deltaTime;
-        if (playerInRange)
+
+        if(agent.remainingDistance < 0.01f)
         {
-            if (shootTimer > shootrate)
+            roamTimer += Time.deltaTime;
+        }
+
+        if (playerInRange && canSeePlayer())
+        {
+          checkRoam();
+        }
+        else if(!playerInRange)
+        {
+            checkRoam();
+        }
+
+    }
+    void checkRoam()
+    {
+        if(roamTimer >= roamPauseTime && agent.remainingDistance < 0.01f)
+        {
+            roam();
+        }
+    }
+
+    void roam()
+    {
+        roamTimer = 0;
+        agent.stoppingDistance = 0;
+
+        Vector3 ranPos = Random.insideUnitSphere * roamDist;
+        ranPos += startingPos;
+
+        NavMeshHit hit;
+        NavMesh.SamplePosition(ranPos, out hit, roamDist, 1);
+        agent.SetDestination(hit.position);
+    }
+    bool canSeePlayer()
+    {
+        playerDir = gameManager.instance.player.transform.position - headPos.position;
+        angleToPlayer = Vector3.Angle(playerDir, transform.forward);
+        Debug.DrawRay(headPos.position, playerDir, Color.red);
+
+        RaycastHit hit;
+        if (Physics.Raycast(headPos.position, playerDir, out hit))
+        {
+
+            if (angleToPlayer <= FOV && hit.collider.CompareTag("Player"))
             {
-                shoot();
+                agent.SetDestination(gameManager.instance.player.transform.position);
+
+                if (shootTimer > shootrate)
+                {
+                    shoot();
+                   
+                }
+                if (agent.remainingDistance <= stoppingDistOrg)
+                    faceTarget();
+                agent.stoppingDistance = stoppingDistOrg;
+                return true;
             }
         }
-       
+        agent.stoppingDistance = 0;
+        return false;
+    }
+
+    void faceTarget()
+    {
+        Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
+        transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,6 +129,7 @@ public class EnemyAI : MonoBehaviour, IDamage
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
+            agent.stoppingDistance = 0;
         }
 
     }
@@ -68,6 +145,7 @@ public class EnemyAI : MonoBehaviour, IDamage
     public void takeDamage(int amount)
     {
         HP -= amount;
+        agent.SetDestination(gameManager.instance.player.transform.position);
 
         if (HP <= 0)
         {
