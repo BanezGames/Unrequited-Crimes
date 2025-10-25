@@ -10,9 +10,11 @@ public class EnemyAI : MonoBehaviour, IDamage
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+       
         colorOrig = model.material.color;
-
         gameManager.instance.updateGameGoal(1);
+
+
     }
 
     // Update is called once per frame

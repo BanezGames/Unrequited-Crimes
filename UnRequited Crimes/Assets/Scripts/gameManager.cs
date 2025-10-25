@@ -7,7 +7,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
-    [SerializeField] GameObject menulose;
+    [SerializeField] GameObject menuLose;
 
     public GameObject player;
     public playerController playerScript;
@@ -70,9 +70,17 @@ public class gameManager : MonoBehaviour
 
         if(gameGoalCount <= 0)
         {
+            statePause();
             menuActive = menuWin;
             menuActive.SetActive(true);
-            statePause();
+           
         }
+    }
+    public void youLose()
+    {
+        statePause();
+        menuActive = menuLose;
+        menuActive.SetActive(true);
+
     }
 }
