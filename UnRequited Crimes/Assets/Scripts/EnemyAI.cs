@@ -17,6 +17,10 @@ public class EnemyAI : MonoBehaviour, IDamage
     [SerializeField] Transform shootPos;
     [SerializeField] GameObject bullet;
     [SerializeField] float shootrate;
+    [SerializeField] Collider axeCollision;
+    [SerializeField] AnimationClip attackAnimation;
+    [SerializeField] AnimationClip walkAnimation;
+    [SerializeField] AnimationClip idleAnimation;
 
     Color colorOrig;
 
@@ -113,6 +117,16 @@ public class EnemyAI : MonoBehaviour, IDamage
     {
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
         transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+    }
+
+    void enableAxeHitBox()
+    {
+        axeCollision.enabled = false;
+    }
+
+    void disableAxeHitBox()
+    {
+        axeCollision.enabled = true;
     }
 
     private void OnTriggerEnter(Collider other)
