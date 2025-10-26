@@ -21,6 +21,7 @@ public class EnemyAI : MonoBehaviour, IDamage
     Color colorOrig;
 
     float shootTimer;
+    float stuckTimer = 0.0f;
     float roamTimer;
     float angleToPlayer;
     float stoppingDistOrg;
@@ -50,9 +51,11 @@ public class EnemyAI : MonoBehaviour, IDamage
             roamTimer += Time.deltaTime;
         }
 
-        if (playerInRange && canSeePlayer())
+        stuckTimer += Time.deltaTime;
+        checkRoam();
+        if (playerInRange && !canSeePlayer())
         {
-          checkRoam();
+            checkRoam();
         }
         else if(!playerInRange)
         {
@@ -66,11 +69,16 @@ public class EnemyAI : MonoBehaviour, IDamage
         {
             roam();
         }
+        else if (stuckTimer >= 3.0f)
+        {
+            roam();
+        }
     }
 
     void roam()
     {
         roamTimer = 0;
+        stuckTimer = 0;
         agent.stoppingDistance = 0;
 
         Vector3 ranPos = Random.insideUnitSphere * roamDist;
