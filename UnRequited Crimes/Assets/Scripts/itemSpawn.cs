@@ -4,12 +4,12 @@ public class itemSpawn : MonoBehaviour
 {
     [SerializeField] GameObject item;
     [SerializeField] int maxItem;
-    [SerializeField] int spawnRate;
+    [SerializeField][Range(0.0f,10.0f)] float spawnRate;
     [SerializeField] Transform[] spawnPos;
 
     int itemCount;
 
-    float spawnTime;
+    float spawnTime = 0.0f;
     bool startSpawning;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,9 +22,12 @@ public class itemSpawn : MonoBehaviour
     {
         if (startSpawning)
         {
-            spawnTime = Time.deltaTime;
+            spawnTime += Time.deltaTime;
             if (itemCount < maxItem && spawnTime >= spawnRate)
+            { 
                 spawn();
+                spawnTime = 0.0f;
+            }
         }
     }
     void spawn()
