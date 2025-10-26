@@ -20,7 +20,6 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int shootdist;
     [SerializeField] float shootRate;
 
-
     Vector3 moveDir;
     Vector3 playerVel;
 
@@ -30,7 +29,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     float shootTimer;
 
     bool isSprinting;
-    //bool isCrouching;
+    bool isUncrouching;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -46,7 +45,16 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         movement();
 
         sprint();
-
+        
+        if (isUncrouching)
+        {
+            RaycastHit hit;
+            if (!Physics.Raycast(transform.position, Vector3.up, out hit, 1.5f))
+            {
+                isUncrouching = false;
+                transform.localScale = new Vector3(transform.localScale.x, 1.0f, transform.localScale.z);
+            }
+        }
     }
     void movement()
     {
@@ -88,12 +96,14 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     {
         if(Input.GetButtonDown("Crouch"))
         {
+            isUncrouching = false;
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * crouchHeightMultiplier, transform.localScale.z);
             //playerVel.y /= crouchMod;
         }
         if (Input.GetButtonUp("Crouch"))
         {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y / crouchHeightMultiplier, transform.localScale.z);
+            isUncrouching = true;
+            //transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y / crouchHeightMultiplier, transform.localScale.z);
             //playerVel.y *= crouchMod;
         }
     }
