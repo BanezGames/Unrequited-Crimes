@@ -15,6 +15,8 @@ public class buttonFunctions : MonoBehaviour
     public void restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (inventoryManager.instance)
+            inventoryManager.instance.ClearInventory();
         gameManager.instance.stateUnPause();
     }
 

@@ -64,6 +64,14 @@ public class inventoryManager : MonoBehaviour
         UpdateInventoryDisplay();
     }
 
+    public void ClearInventory()
+    {
+        while (itemList.Count > 0)
+        {
+            RemoveItem(itemList[0]);
+        }
+    }
+
     public int GetInventoryCount()
     {
         return itemList.Count;
