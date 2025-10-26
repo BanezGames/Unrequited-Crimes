@@ -10,7 +10,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int HP;
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
-    //[SerializeField] int crouchMod;
+    [SerializeField] [Range(0.1f, 1.0f)] float crouchHeightMultiplier;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
@@ -62,7 +62,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
         controller.Move(moveDir * speed * Time.deltaTime);
 
-        //crouch();
+        crouch();
         jump();
         controller.Move(playerVel * Time.deltaTime);
 
@@ -84,17 +84,19 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         }
     }
 
-    //void crouch()
-    //{
-    //    if(Input.GetButtonDown("Crouch"))
-    //    {
-    //        playerVel.y /= crouchMod;
-    //    }
-    //    if (Input.GetButtonUp("Crouch"))
-    //    {
-    //        playerVel.y *= crouchMod;
-    //    }
-    //}
+    void crouch()
+    {
+        if(Input.GetButtonDown("Crouch"))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * crouchHeightMultiplier, transform.localScale.z);
+            //playerVel.y /= crouchMod;
+        }
+        if (Input.GetButtonUp("Crouch"))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y / crouchHeightMultiplier, transform.localScale.z);
+            //playerVel.y *= crouchMod;
+        }
+    }
 
     void jump()
     {
@@ -120,9 +122,6 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
             baseInteractable interactableObject = hit.collider.GetComponent<baseInteractable>();
             if (interactableObject)
             {
-                // TODO:
-                // When we add an inventory and items, also pass the name of the currently held item into this function
-                // or pass "" if no item is currently being held
                 if (interactableObject.TryInteract(this))
                     shootTimer = 0;
             }
