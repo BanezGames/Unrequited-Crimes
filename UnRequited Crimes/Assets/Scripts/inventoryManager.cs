@@ -89,18 +89,19 @@ public class inventoryManager : MonoBehaviour
 
     private void SwitchActiveItem(int oldIndex)
     {
+        var player = FindFirstObjectByType<playerController>();
         if (itemList.Count <= 0)
+        {
+            player.ClearHeldItem();
             return;
+        }
         itemDisplay[oldIndex].transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         itemDisplay[currentItemIndex].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         itemNameText.GetComponent<TMP_Text>().text = itemList[currentItemIndex].itemName;
-        var player = FindFirstObjectByType<playerController>();
         if (player)
         {
             if (itemList.Count > 0)
                 player.SwapHeldItem(itemList[currentItemIndex]);
-            else
-                player.SwapHeldItem(null);
         }
         //itemNameText.text = itemList[currentItemIndex].itemName;
     }

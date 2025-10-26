@@ -141,15 +141,22 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
 
     public void SwapHeldItem(itemData data)
     {
-        if (data)
+        if (data != null)
         {
-            heldModel.GetComponent<MeshRenderer>().enabled = true;
+            heldModel.SetActive(true);
+            //heldModel.GetComponent<MeshRenderer>().enabled = true;
             heldModel.GetComponent<MeshFilter>().sharedMesh = data.itemMesh;
             heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.itemMaterial;
         }
-        else
-        {
-            heldModel.GetComponent<MeshRenderer>().enabled = false;
-        }
+        //else
+        //{
+        //    heldModel.GetComponent<MeshFilter>().sharedMesh.Clear();//.SetActive(false);
+        //}
+    }
+    
+    public void ClearHeldItem()
+    {
+        Debug.Log("Clearing item");
+        heldModel.SetActive(false);
     }
 }
