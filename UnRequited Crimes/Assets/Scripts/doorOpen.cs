@@ -22,7 +22,7 @@ public class doorOpen : baseInteractable
         }
         if (finishedMoving)
         {
-            isOpening = !isOpening;
+            isOpening = true;
             finishedMoving = false;
             if (isOpening)
                 Debug.Log("Opening Door");
