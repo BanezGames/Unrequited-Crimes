@@ -136,6 +136,9 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     void shoot()
     {
+        if (!shootPos)
+            return;
+
         shootTimer = 0;
 
         Instantiate(bullet, shootPos.position, transform.rotation);

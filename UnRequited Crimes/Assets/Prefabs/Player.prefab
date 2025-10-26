@@ -92,7 +92,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588300050026862963}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &2588161786614167067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,10 +306,10 @@ MonoBehaviour:
   sprintMod: 3
   crouchHeightMultiplier: 0.5
   jumpSpeed: 10
-  jumpCountMax: 2
+  jumpCountMax: 1
   gravity: 35
   heldModel: {fileID: 1620325466818681269}
-  shootDamage: 1
+  shootDamage: 0
   shootdist: 15
   shootRate: 0.5
 --- !u!143 &846860922572013503
