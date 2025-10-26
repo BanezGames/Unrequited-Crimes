@@ -168,6 +168,7 @@ public class inventoryManager : MonoBehaviour
             {
                 itemList.RemoveAt(i);
                 Destroy(itemDisplay[i]);
+                itemDisplay.RemoveAt(i);
                 if (currentItemIndex == i)
                     currentItemIndex--;
                 if (currentItemIndex < 0)

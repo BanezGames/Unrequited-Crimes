@@ -14,7 +14,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
 
-    //[SerializeField] GameObject heldModel;
+    [SerializeField] GameObject heldModel;
     [SerializeField] int shootDamage;
     [SerializeField] int shootdist;
     [SerializeField] float shootRate;
@@ -137,5 +137,19 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         gameManager.instance.playerDamageScreen.SetActive(true);
         yield return new WaitForSeconds(0.1f);
         gameManager.instance.playerDamageScreen.SetActive(false);
+    }
+
+    public void SwapHeldItem(itemData data)
+    {
+        if (data)
+        {
+            heldModel.GetComponent<MeshRenderer>().enabled = true;
+            heldModel.GetComponent<MeshFilter>().sharedMesh = data.itemMesh;
+            heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.itemMaterial;
+        }
+        else
+        {
+            heldModel.GetComponent<MeshRenderer>().enabled = false;
+        }
     }
 }
