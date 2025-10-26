@@ -10,6 +10,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int HP;
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
+    //[SerializeField] int crouchMod;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
@@ -29,6 +30,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     float shootTimer;
 
     bool isSprinting;
+    //bool isCrouching;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -44,6 +46,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         movement();
 
         sprint();
+
     }
     void movement()
     {
@@ -59,7 +62,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
         controller.Move(moveDir * speed * Time.deltaTime);
 
-        
+        //crouch();
         jump();
         controller.Move(playerVel * Time.deltaTime);
 
@@ -80,6 +83,18 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
             speed /= sprintMod;
         }
     }
+
+    //void crouch()
+    //{
+    //    if(Input.GetButtonDown("Crouch"))
+    //    {
+    //        playerVel.y /= crouchMod;
+    //    }
+    //    if (Input.GetButtonUp("Crouch"))
+    //    {
+    //        playerVel.y *= crouchMod;
+    //    }
+    //}
 
     void jump()
     {
