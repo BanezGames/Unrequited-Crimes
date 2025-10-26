@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class gameManager : MonoBehaviour
 {
@@ -12,6 +14,9 @@ public class gameManager : MonoBehaviour
     public GameObject player;
     public playerController playerScript;
 
+    public Image playerHPBar;
+    public GameObject playerDamageScreen;
+
     public bool isPaused;
 
     float timeScaleOrig;
@@ -24,6 +29,7 @@ public class gameManager : MonoBehaviour
         timeScaleOrig = Time.timeScale;
 
         player = GameObject.FindWithTag("Player");
+        if (player)
             playerScript = player.GetComponent<playerController>();
     }
 
@@ -83,4 +89,6 @@ public class gameManager : MonoBehaviour
         menuActive.SetActive(true);
 
     }
+
+
 }

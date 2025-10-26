@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage //Ipickup
 {
@@ -9,6 +10,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int HP;
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
+    [SerializeField] [Range(0.1f, 1.0f)] float crouchHeightMultiplier;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
@@ -28,10 +30,12 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     float shootTimer;
 
     bool isSprinting;
+    //bool isCrouching;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
     }
 
     // Update is called once per frame
@@ -42,6 +46,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         movement();
 
         sprint();
+
     }
     void movement()
     {
@@ -57,7 +62,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
         controller.Move(moveDir * speed * Time.deltaTime);
 
-        
+        crouch();
         jump();
         controller.Move(playerVel * Time.deltaTime);
 
@@ -79,6 +84,20 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         }
     }
 
+    void crouch()
+    {
+        if(Input.GetButtonDown("Crouch"))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * crouchHeightMultiplier, transform.localScale.z);
+            //playerVel.y /= crouchMod;
+        }
+        if (Input.GetButtonUp("Crouch"))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y / crouchHeightMultiplier, transform.localScale.z);
+            //playerVel.y *= crouchMod;
+        }
+    }
+
     void jump()
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
@@ -94,7 +113,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootdist))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if(dmg != null)
+            if(dmg != null && shootDamage > 0)
             {
                 dmg.takeDamage(shootDamage);
                 shootTimer = 0;
@@ -103,9 +122,6 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
             baseInteractable interactableObject = hit.collider.GetComponent<baseInteractable>();
             if (interactableObject)
             {
-                // TODO:
-                // When we add an inventory and items, also pass the name of the currently held item into this function
-                // or pass "" if no item is currently being held
                 if (interactableObject.TryInteract(this))
                     shootTimer = 0;
             }
@@ -116,6 +132,8 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     public void takeDamage(int amount)
     {
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine( flashPlayerDmg());
 
         if(HP <= 0)
         {
@@ -124,23 +142,35 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         }
     }
 
+   public void updatePlayerUI()
+    {
+        gameManager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
+    }
+    IEnumerator flashPlayerDmg()
+    {
+        gameManager.instance.playerDamageScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gameManager.instance.playerDamageScreen.SetActive(false);
+    }
+
     public void SwapHeldItem(itemData data)
     {
-        if (data)
+        if (data != null)
         {
-            heldModel.GetComponent<MeshRenderer>().enabled = true;
+            heldModel.SetActive(true);
+            //heldModel.GetComponent<MeshRenderer>().enabled = true;
             heldModel.GetComponent<MeshFilter>().sharedMesh = data.itemMesh;
             heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.itemMaterial;
         }
-        else
-        {
-            heldModel.GetComponent<MeshRenderer>().enabled = false;
-        }
+        //else
+        //{
+        //    heldModel.GetComponent<MeshFilter>().sharedMesh.Clear();//.SetActive(false);
+        //}
     }
-
-    //public void getItem(itemData data)
-    //{
-    //    heldModel.GetComponent<MeshFilter>().sharedMesh = data.heldModel.GetComponent<MeshFilter>().sharedMesh;
-    //    heldModel.GetComponent<MeshRenderer>().sharedMaterial = data.heldModel.GetComponent<MeshRenderer>().sharedMaterial;
-    //}
+    
+    public void ClearHeldItem()
+    {
+        Debug.Log("Clearing item");
+        heldModel.SetActive(false);
+    }
 }
