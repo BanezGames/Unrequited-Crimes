@@ -28,6 +28,9 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [Range(0, 1)][SerializeField] float audJumpVol;
     [SerializeField] AudioClip[] audHurt;
     [Range(0, 1)][SerializeField] float audHurtVol;
+    [SerializeField] AudioClip[] backgroundSounds;
+    [Range(0, 1)][SerializeField] float backgroundSoundsVol;
+
 
     Vector3 moveDir;
     Vector3 playerVel;
@@ -40,6 +43,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     bool isSprinting;
     bool isUncrouching;
     bool isPlayingSteps;
+    bool isBackgrondPlaying;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -50,8 +54,10 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     // Update is called once per frame
     void Update()
     {
+
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootdist, Color.red);
         shootTimer += Time.deltaTime;
+        
         movement();
 
         sprint();
@@ -73,6 +79,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
             if (moveDir.normalized.magnitude > 0.3f && !isPlayingSteps)
             {
                 StartCoroutine(playStep());
+                StartCoroutine(playbackground());
             }
             playerVel = Vector3.zero;
             jumpCount = 0;
@@ -98,6 +105,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     {
         if (Input.GetButtonDown("Sprint"))
         {
+           
             speed *= sprintMod;
         }
         else if (Input.GetButtonUp("Sprint"))
@@ -204,6 +212,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     {
         isPlayingSteps = true;
         aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+        aud.PlayOneShot(backgroundSounds[Random.Range(0, backgroundSounds.Length)], backgroundSoundsVol);
 
         if (isSprinting)
         {
@@ -214,5 +223,22 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
             yield return new WaitForSeconds(0.5f);
         }
         isPlayingSteps = false;
+    }
+
+    IEnumerator playbackground()
+    {
+        isBackgrondPlaying = true;
+        
+        aud.PlayOneShot(backgroundSounds[Random.Range(0, backgroundSounds.Length)], backgroundSoundsVol);
+
+        if (isPlayingSteps)
+        {
+            yield return new WaitForSeconds(backgroundSounds.Length);
+        }
+        else
+        {
+            yield return new WaitForSeconds(backgroundSounds.Length);
+        }
+        isBackgrondPlaying = false;
     }
 }
