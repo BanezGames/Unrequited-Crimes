@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class playerController : MonoBehaviour, IDamage //Ipickup
 {
@@ -20,6 +21,14 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     [SerializeField] int shootdist;
     [SerializeField] float shootRate;
 
+    [SerializeField] AudioSource aud;
+    [SerializeField] AudioClip[] audSteps;
+    [Range(0, 1)][SerializeField] float audStepsVol;
+    [SerializeField] AudioClip[] audJump;
+    [Range(0, 1)][SerializeField] float audJumpVol;
+    [SerializeField] AudioClip[] audHurt;
+    [Range(0, 1)][SerializeField] float audHurtVol;
+
     Vector3 moveDir;
     Vector3 playerVel;
 
@@ -30,6 +39,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
 
     bool isSprinting;
     bool isUncrouching;
+    bool isPlayingSteps;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -60,6 +70,10 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     {
         if (controller.isGrounded)
         {
+            if (moveDir.normalized.magnitude > 0.3f && !isPlayingSteps)
+            {
+                StartCoroutine(playStep());
+            }
             playerVel = Vector3.zero;
             jumpCount = 0;
         }
@@ -112,6 +126,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
         {
+            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
             playerVel.y = jumpSpeed;
             jumpCount++;
         }
@@ -142,6 +157,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     public void takeDamage(int amount)
     {
         HP -= amount;
+        aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
         updatePlayerUI();
         StartCoroutine( flashPlayerDmg());
 
@@ -182,5 +198,21 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
     {
         Debug.Log("Clearing item");
         heldModel.SetActive(false);
+    }
+
+    IEnumerator playStep()
+    {
+        isPlayingSteps = true;
+        aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+
+        if (isSprinting)
+        {
+            yield return new WaitForSeconds(0.3f);
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+        isPlayingSteps = false;
     }
 }
