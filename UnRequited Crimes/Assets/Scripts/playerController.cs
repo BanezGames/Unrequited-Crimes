@@ -113,7 +113,7 @@ public class playerController : MonoBehaviour, IDamage //Ipickup
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootdist))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if(dmg != null)
+            if(dmg != null && shootDamage > 0)
             {
                 dmg.takeDamage(shootDamage);
                 shootTimer = 0;
